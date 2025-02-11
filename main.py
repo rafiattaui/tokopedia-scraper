@@ -39,3 +39,6 @@ print("Browser title:", driver.title)
 print("Browser URL:", driver.current_url)
 driver.quit()
 print("Browser closed.")
+
+# TODO - Filter products based on keywords
+# TODO - Display products on a GUI or HTML page
