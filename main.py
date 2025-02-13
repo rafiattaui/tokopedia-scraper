@@ -19,6 +19,9 @@ driver = webdriver.Chrome(service=service, options=options)
 # Product to search
 product_query = "rtx 3060"
 keywords = []
+filterwords = ["pc gaming"]
+products = {}
+search_length = 5
 
 # Navigate to Tokopedia search page
 driver.get(f"https://www.tokopedia.com/search?st=product&q={product_query}")
@@ -27,18 +30,26 @@ driver.get(f"https://www.tokopedia.com/search?st=product&q={product_query}")
 driver.implicitly_wait(5)
 
 # Find all product price elements
-names = driver.find_elements(By.XPATH, "//span[contains(@class, '_0T8-iGxMpV6NEsYEhwkqEg==')]") # Product names
 prices = driver.find_elements(By.XPATH, "//div[contains(@class, '_67d6E1xDKIzw+i2D2L0tjw== ')]")  # Product prices
+names = driver.find_elements(By.XPATH, "//span[contains(@class, '_0T8-iGxMpV6NEsYEhwkqEg==')]")  # Product names
+for i, name in enumerate(names):  # Use enumerate() to track index efficiently
+    if product_query.lower() in name.text.lower():
+        print(f"Filtering {name.text}")
+        if all(filterword.lower() not in name.text.lower() for filterword in filterwords):
+            products[name.text] = prices[i].text  # Use i from enumerate()
+            
+        if len(products) == search_length:
+            break  # Stop if we reach the required number of products
 
 # Print product prices
-for i in range(3):
+for i in range(len(products)):
     try:
         print(f"Product {i+1}:")
         print("Name:", names[i].text)
         print("Price:", prices[i].text)
         print()
     except:
-        print("Product not found.\n")
+        print(f"Product {i+1} not found.\n")
         break
 
 # Close the browser
