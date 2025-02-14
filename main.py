@@ -31,6 +31,7 @@ driver.implicitly_wait(5)
 # Find product names and prices
 names = driver.find_elements(By.XPATH, "//span[contains(@class, '_0T8-iGxMpV6NEsYEhwkqEg==')]")
 prices = driver.find_elements(By.XPATH, "//div[contains(@class, '_67d6E1xDKIzw+i2D2L0tjw== ')]")
+print(f"Found {len(names)} products.\n")
 
 # Ensure the two lists are the same length
 if len(names) != len(prices):
@@ -64,6 +65,7 @@ driver.quit()
 print("Browser closed.")
 
 
-# TODO - Filter products based on keywords
+# TODO - Filter products based on keywords (Done)
+# TODO - Load more items if not enough valid products.
 # TODO - Display products on a GUI or HTML page
 # TODO - Detect outliers
