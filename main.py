@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 
 # Path to ChromeDriver
 DRIVER_PATH = "chromedriver-win64/chromedriver.exe"
@@ -26,30 +27,27 @@ search_length = 5
 driver.get(f"https://www.tokopedia.com/search?st=product&q={product_query}")
 
 # Wait for the page to load
-driver.implicitly_wait(5)
+driver.implicitly_wait(10)
 
 # Find product names and prices
-names = driver.find_elements(By.XPATH, "//span[contains(@class, '_0T8-iGxMpV6NEsYEhwkqEg==')]")
-prices = driver.find_elements(By.XPATH, "//div[contains(@class, '_67d6E1xDKIzw+i2D2L0tjw== ')]")
-print(f"Found {len(names)} products.\n")
-
-# Ensure the two lists are the same length
-if len(names) != len(prices):
-    print("Warning: Mismatched name-price elements. Skipping inconsistent results.")
-    matched_results = zip(names[:len(prices)], prices)
-else:
-    matched_results = zip(names, prices)
-
-# Filter products
-for name, price in matched_results:
-    product_name = name.text.lower()
-    if product_query.lower() in product_name and all(fw.lower() not in product_name for fw in filterwords):
-        products.append((name.text, price.text))
+i = 0
+while len(products) < search_length:
+    name = driver.find_element(By.XPATH, f"(//span[contains(@class, '_0T8-iGxMpV6NEsYEhwkqEg==')])[{i+1}]")
+    price = driver.find_element(By.XPATH, f"(//div[contains(@class, '_67d6E1xDKIzw+i2D2L0tjw== ')])[{i+1}]")
     
-    if len(products) >= search_length:
-        print("")
-        break  # Stop after collecting enough products
+    print(f"Scanning product, {name.text}: {price.text}\n")
     
+    matched_result = (name.text, price.text)
+    product_name, product_price = matched_result
+
+    # Filtering products
+    if product_query.lower() in product_name.lower() and all(fw.lower() not in product_name.lower() for fw in filterwords):
+        products.append((product_name, product_price))
+
+    i += 1
+
+print(f"Found {i} products in total\nAccepted {len(products)} valid products\n")
+        
 # Print results
 for i, (name, price) in enumerate(products, start=1):
     print(f"Product {i}:")
