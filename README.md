@@ -23,6 +23,13 @@ https://www.selenium.dev/documentation/
 
 ## Installation
 
+### Download a WebDriver
+
+You need a WebDriver for this program to run on.
+You should use a chrome WebDriver for this, available here:
+https://googlechromelabs.github.io/chrome-for-testing/
+Drag the chromedriver folder into this program's directory, and update your Google Chrome to prevent errors.
+
 ### Initialize a virtual environment (Optional but recommended)
 
 ```
