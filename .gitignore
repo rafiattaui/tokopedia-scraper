@@ -1,3 +1,3 @@
 /chromedriver-win64
 /pyproject.toml
-test.py
+product-scraper/__pycache__
