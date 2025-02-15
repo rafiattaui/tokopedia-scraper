@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from product import Product
+import time
 
 # Path to ChromeDriver
 DRIVER_PATH = "chromedriver-win64/chromedriver.exe"
@@ -22,13 +23,16 @@ driver = webdriver.Chrome(service=service, options=options)
 product_query = "rtx 3060"
 filterwords = ["pc gaming", "legion", "pc"]
 products = []
-search_length = 5
+search_length = 20
 
 # Navigate to Tokopedia search page
 driver.get(f"https://www.tokopedia.com/search?st=product&q={product_query}")
 
-# Wait for the page to load
+# Wait for the page to load, and scroll to the end of the page to load all options.
 driver.implicitly_wait(10)
+for _ in range(0, 6500, 500):
+            time.sleep(0.1)
+            driver.execute_script("window.scrollBy(0,500)")
 
 # Find product names and prices
 i = 0
@@ -38,7 +42,7 @@ while len(products) < search_length:  # Continually search for valid products un
         price = driver.find_element(By.XPATH, f"(//div[contains(@class, '_67d6E1xDKIzw+i2D2L0tjw==')])[{i+1}]")
         url = driver.find_element(By.XPATH, f"(//a[contains(@class, 'oQ94Awb6LlTiGByQZo8Lyw== IM26HEnTb-krJayD-R0OHw==')])[{i+1}]")
         
-        print(f"Scanning product, {name.text}: {price.text}\n")
+        print(f"Scanning product: {name.text}: {price.text}")
         
         matched_result = (name.text, price.text, url.get_attribute("href"))
         product_name, product_price, product_url = matched_result
@@ -55,7 +59,7 @@ while len(products) < search_length:  # Continually search for valid products un
         i += 1  # Always increment i, even if an exception occurs
 
 
-print(f"Found {i} products in total\nAccepted {len(products)} valid products\n")
+print(f"Found {i} products before accepting {len(products)} valid products.\n")
         
 # Print results
 for i, product in enumerate(products, start=1):
@@ -70,7 +74,7 @@ print("Browser closed.")
 
 
 # TODO - Filter products based on keywords (Done)
-# TODO - Store more information of a product in a compact manner, using a Product class. 
-# TODO - Load more items if not enough valid products.
+# TODO - Store more information of a product in a compact manner, using a Product class. (Done)
+# TODO - Load more items if not enough valid products. (Solved by scrolling to the end of the page to load all items)
 # TODO - Display products on a GUI or HTML page
 # TODO - Detect outliers
