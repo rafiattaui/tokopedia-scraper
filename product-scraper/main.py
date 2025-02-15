@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+from product import Product
 
 # Path to ChromeDriver
 DRIVER_PATH = "chromedriver-win64/chromedriver.exe"
@@ -31,29 +32,34 @@ driver.implicitly_wait(10)
 
 # Find product names and prices
 i = 0
-while len(products) < search_length:
-    name = driver.find_element(By.XPATH, f"(//span[contains(@class, '_0T8-iGxMpV6NEsYEhwkqEg==')])[{i+1}]")
-    price = driver.find_element(By.XPATH, f"(//div[contains(@class, '_67d6E1xDKIzw+i2D2L0tjw== ')])[{i+1}]")
-    
-    print(f"Scanning product, {name.text}: {price.text}\n")
-    
-    matched_result = (name.text, price.text)
-    product_name, product_price = matched_result
+while len(products) < search_length:  # Continually search for valid products until we have enough results
+    try:
+        name = driver.find_element(By.XPATH, f"(//span[contains(@class, '_0T8-iGxMpV6NEsYEhwkqEg==')])[{i+1}]")
+        price = driver.find_element(By.XPATH, f"(//div[contains(@class, '_67d6E1xDKIzw+i2D2L0tjw==')])[{i+1}]")
+        url = driver.find_element(By.XPATH, f"(//a[contains(@class, 'oQ94Awb6LlTiGByQZo8Lyw== IM26HEnTb-krJayD-R0OHw==')])[{i+1}]")
+        
+        print(f"Scanning product, {name.text}: {price.text}\n")
+        
+        matched_result = (name.text, price.text, url.get_attribute("href"))
+        product_name, product_price, product_url = matched_result
 
-    # Filtering products
-    if product_query.lower() in product_name.lower() and all(fw.lower() not in product_name.lower() for fw in filterwords):
-        products.append((product_name, product_price))
+        # Filtering products
+        if product_query.lower() in product_name.lower() and all(fw.lower() not in product_name.lower() for fw in filterwords):
+            products.append(Product(product_name, product_price, product_url))
 
-    i += 1
+    except NoSuchElementException:
+        print("No such items were found, or no more items could be found.")
+        break  # Stop the loop if no more elements are found
+
+    finally:
+        i += 1  # Always increment i, even if an exception occurs
+
 
 print(f"Found {i} products in total\nAccepted {len(products)} valid products\n")
         
 # Print results
-for i, (name, price) in enumerate(products, start=1):
-    print(f"Product {i}:")
-    print("Name:", name)
-    print("Price:", price)
-    print()
+for i, product in enumerate(products, start=1):
+    print(product)
 
 # Close the browser
 print("Closing the browser...")
@@ -64,6 +70,7 @@ print("Browser closed.")
 
 
 # TODO - Filter products based on keywords (Done)
+# TODO - Store more information of a product in a compact manner, using a Product class. 
 # TODO - Load more items if not enough valid products.
 # TODO - Display products on a GUI or HTML page
 # TODO - Detect outliers
