@@ -1,4 +1,4 @@
 /chromedriver-win64
 /pyproject.toml
-product-scraper/__pycache__
 venv/
+product-scraper/__pycache__/product.cpython-312.pyc
