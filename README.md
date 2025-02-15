@@ -7,9 +7,9 @@ Returns a list of products that are filtered based on the user, alongside the pr
 
 ## Features (Implemented & To-be Implemented)
 
-✅ Filter and Sort functions
-❌ Support for other shopping websites and price comparison between each site.
-❌ Front-End webpage for GUI
+- ✅ Filter and Sort functions
+- ❌ Support for other shopping websites and price comparison between each site.
+- ❌ Front-End webpage for GUI
 
 ## Prerequisite
 
