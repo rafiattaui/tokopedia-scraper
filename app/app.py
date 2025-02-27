@@ -11,9 +11,12 @@ def index():
 def index_query():
     query = request.form["query"].lower()
     print(f"Searching for products with query: {query}")
+    
     scraper = Scraper()
     scraper.search(query, 10, ["samsung", "xiaomi"])
+    scraper.quit()
+    
     return render_template("index.html")
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', debug=True)

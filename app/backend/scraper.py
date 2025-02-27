@@ -3,7 +3,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-from backend.product import Product
+from product import Product
 import time
 
 class Scraper:
@@ -37,7 +37,6 @@ class Scraper:
                     self.driver.execute_script("window.scrollBy(0,500)")
 
         # Find product names and prices
-        # Find product names and prices
         i = 0
         max_products = len(self.driver.find_elements(By.XPATH, "//span[contains(@class, '_0T8-iGxMpV6NEsYEhwkqEg==')]"))
         product_query = product_query.lower()
@@ -69,8 +68,10 @@ class Scraper:
         print(f"Found {i} products before accepting {len(products)} valid products.\n")
                 
         # Print results
-        for i, product in enumerate(products, start=1):
-            print(product)
+        # for i, product in enumerate(products, start=1):
+        #     print(product)
+            
+        return products
             
     def quit(self):
         
@@ -88,3 +89,6 @@ class Scraper:
 # TODO - Find products based on rating      
 # TODO - Display products on a GUI or HTML page
 # TODO - Detect outliers
+
+scraper = Scraper()
+scraper.search("iphone", 10, ["samsung", "xiaomi"])
