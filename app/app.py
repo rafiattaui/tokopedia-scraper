@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from backend.scraper import Scraper
+from scraper_module.scraper import Scraper
 
 app = Flask(__name__)
 
@@ -12,8 +12,8 @@ def index_query():
     query = request.form["query"].lower()
     print(f"Searching for products with query: {query}")
     
-    scraper = Scraper()
-    scraper.search(query, 10, ["samsung", "xiaomi"])
+    scraper = Scraper(False, "scraper_module/chromedriver-win64/chromedriver.exe")
+    scraper.search(query, 10, "samsung", "xiaomi")
     scraper.quit()
     
     return render_template("index.html")
